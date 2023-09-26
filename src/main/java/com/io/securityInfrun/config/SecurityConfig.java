@@ -1,11 +1,14 @@
 package com.io.securityInfrun.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +23,12 @@ public class SecurityConfig {
 	
 	@Autowired
 	UserDetailsService userDetailsService;
+	
+	@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+    // antMatchers 부분도 deprecated 되어 requestMatchers로 대체
+       return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/main", "/css/**"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/js/**", "/images/**"),new AntPathRequestMatcher("/webjars/**", "/**/favicon.ico"));
+    }
 	
    @Bean
    public SecurityFilterChain allfilterChain(HttpSecurity http) throws Exception { 
@@ -166,6 +175,11 @@ public class SecurityConfig {
 	   		.anyRequest().authenticated()
 	   	.and()
 	   		.formLogin(); 
+	   
+	   
+	   
+	   
+	   
         
       return http.build();
    }
@@ -182,15 +196,18 @@ public class SecurityConfig {
            .username("admin")
            .password("1111")
            //.roles("ADMIN","USER")
-           .roles("ADMIN")
+           .roles("ADMIN","MANAGER","USER")
            .build();
        UserDetails manager = User.withDefaultPasswordEncoder()
            .username("manager")
            .password("1111")
-           .roles("MANAGER")
+           .roles("MANAGER","USER")
            .build();
        return new InMemoryUserDetailsManager(user, admin, manager);
    }
+   
+   
+
 	
 }
 

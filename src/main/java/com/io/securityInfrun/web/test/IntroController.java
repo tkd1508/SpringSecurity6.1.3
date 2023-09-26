@@ -24,9 +24,9 @@ public class IntroController {
 		return "index";
 	}
 	
-	@GetMapping("/")
+	@GetMapping("/k")
 	public String getInts() {
-		System.out.println("path: / /n");
+		System.out.println("path: /k /n");
 		return "index";
 	}
 	
