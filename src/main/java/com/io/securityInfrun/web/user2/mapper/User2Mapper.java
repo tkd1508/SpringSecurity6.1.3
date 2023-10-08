@@ -1,4 +1,4 @@
-package com.io.securityInfrun.web.test.mapper;
+package com.io.securityInfrun.web.user2.mapper;
 
 import java.util.ArrayList;
 
@@ -9,9 +9,10 @@ import com.io.securityInfrun.util.UISMap;
 
 @Repository
 @Mapper
-public interface TestMapper {
+public interface User2Mapper {
 
-	public ArrayList<UISMap> selectTest();
+	public ArrayList<UISMap> user2InfoSelect();
+	public int user2InfoInsert();
 	
 	/*
 	 * @Select("select * from testtable") public String testtt();

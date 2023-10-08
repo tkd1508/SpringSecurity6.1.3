@@ -1,10 +1,15 @@
 package com.io.securityInfrun.web.test;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class IntroController {
+	
+    private PasswordEncoder passwordEncoder;
+    
+    
 
 	@GetMapping("/intro.do")
 	public String getIntro() {
@@ -24,15 +29,38 @@ public class IntroController {
 		return "index";
 	}
 	
-	@GetMapping("/k")
+	@GetMapping("/")
 	public String getInts() {
-		System.out.println("path: /k /n");
-		return "index";
+		System.out.println("path: / /n");
+		
+		
+		
+		
+		//System.out.println("암호화: /k /n" + passwordEncode());
+		
+		
+		
+		
+		return "/index";
 	}
+	
+	
+   String passwordEncode() {
+      // given
+      String rawPassword = "12345678"; // VO 생성자에다가 넣어 or 회원가입 로직에 넣던가
+
+      // when
+      String encodedPassword = passwordEncoder.encode(rawPassword);
+      
+      //passwordEncoder.matches(rawPassword, encodedPassword);
+
+      return encodedPassword;
+   } 
 	
 	@GetMapping("/mypage")
 	public String getInt23() {
 		System.out.println("path: /mypage /n");
+		//System.out.println("암호화: /k /n" + passwordEncode());
 		return "index";
 	}
 	

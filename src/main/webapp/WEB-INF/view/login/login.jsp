@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/jsp/common/top.jspf"%>
+<%@ include file="/WEB-INF/view/common/top.jspf"%>
 
 <script type="text/javascript" src="<c:url value='/js/login/login.js'/>"></script>
 </head>

@@ -1,25 +1,25 @@
 package com.io.securityInfrun.web.test.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.web.test.mapper.TestMapper;
-import com.io.securityInfrun.web.test.vo.TestVo;
 
 import jakarta.annotation.Resource;
 
-@Service
+@Service("testService")
 public class TestService {
 	
-	public TestMapper mappera;
+	@Resource(name="testMapper")
+	public TestMapper testMapper;
 	
-	 public List<TestVo> selectTest() {
+	 public ArrayList<UISMap> selectTest() {
         
-		 List<TestVo> check = null;
+		 ArrayList<UISMap> check = null;
 		 
-		 check = mappera.selectTest();
+		 check = testMapper.selectTest();
 		 /*
 		 try {
 			 check = mapper.selectTest();

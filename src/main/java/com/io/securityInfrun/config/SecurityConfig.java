@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -27,7 +29,7 @@ public class SecurityConfig {
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
     // antMatchers 부분도 deprecated 되어 requestMatchers로 대체
-       return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/main", "/css/**"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/js/**", "/images/**"),new AntPathRequestMatcher("/webjars/**", "/**/favicon.ico"));
+       return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/main", "/css/**"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/js/**", "/images/**"), new AntPathRequestMatcher("/webjars/**", "/**/favicon.ico"), new AntPathRequestMatcher("/WEB-INF/**", "/view/**"));
     }
 	
    @Bean
@@ -164,12 +166,14 @@ public class SecurityConfig {
         //SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL); // 이렇게 설정하면 메인과 자식에서의 시큐리티 정보는 쓰레드에서 이어진다. 상속 가능하게 됨.
         */
 	   
+	   http.csrf().disable();
 	   
 	   // 지금부터 프로젝트 셋팅을 시작한다
 	   
 	   http.authorizeRequests()
 	   		.requestMatchers(new AntPathRequestMatcher("/")).permitAll()                   // 기본 경로는 로그인을 안하고도 볼 수 있어야함
-	   		.requestMatchers(new AntPathRequestMatcher("/mypage")).hasRole("USER")         //유저 권한이 있는 사람만 접근 가능
+	   		.requestMatchers(new AntPathRequestMatcher("/user.do")).hasRole("USER")         //유저 권한이 있는 사람만 접근 가능
+	   		.requestMatchers(new AntPathRequestMatcher("/userInfo.do")).hasRole("USER")
 	   		.requestMatchers(new AntPathRequestMatcher("/messages")).hasRole("MANAGER")
 	   		.requestMatchers(new AntPathRequestMatcher("/config")).hasRole("ADMIN")
 	   		.anyRequest().authenticated()
@@ -206,6 +210,12 @@ public class SecurityConfig {
        return new InMemoryUserDetailsManager(user, admin, manager);
    }
    
+   /*
+   @Bean
+   public PasswordEncoder getPasswordEncoder() {
+      return new BCryptPasswordEncoder();
+   }
+   */
    
 
 	

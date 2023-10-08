@@ -4,6 +4,9 @@
 <configuration>
 	<typeAliases>
 		<typeAlias alias="testVo" type="com.io.securityInfrun.web.test.vo.TestVo"/>
+		<typeAlias alias="UserVo" type="com.io.securityInfrun.web.user.vo.UserVo"/>
+		<typeAlias alias="uisMap" type="com.io.securityInfrun.util.UISMap"/>
+		<typeAlias alias="uisRsMap" type="com.io.securityInfrun.util.UISMapList"/>
 	</typeAliases>
 	
 	

@@ -2,7 +2,6 @@ package com.io.securityInfrun.config;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -19,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-@MapperScan(basePackages = "com.example.demo.web.mapper", sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScan(basePackages = "com.io.securityInfrun.web.*.mapper", sqlSessionFactoryRef = "sqlSessionFactory")
 public class MvcConfig implements WebMvcConfigurer{
 
 	@Autowired
@@ -32,8 +31,9 @@ public class MvcConfig implements WebMvcConfigurer{
 		
 		Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:/sqlmaps/**/*_SQL.xml");
 		Resource cres = new PathMatchingResourcePatternResolver().getResource("classpath:/sqlmaps/sql-mapper-config.xml");
-		sqlSessionFactoryBean.setMapperLocations(res[0]);
+		sqlSessionFactoryBean.setMapperLocations(res); // 기존 res[0]
 		sqlSessionFactoryBean.setConfigLocation(cres);
+		
 		return sqlSessionFactoryBean.getObject();
 	}
 	

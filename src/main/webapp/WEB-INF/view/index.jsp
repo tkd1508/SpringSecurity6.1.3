@@ -7,6 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-인덱스 시작 페이지
+인덱스 시작 페이지 입니다2222
+
+${pageContext.request.contextPath}
 </body>
 </html>
