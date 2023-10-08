@@ -210,15 +210,14 @@ public class SecurityConfig {
        return new InMemoryUserDetailsManager(user, admin, manager);
    }
    
-   /*
+   
    @Bean
    public PasswordEncoder getPasswordEncoder() {
       return new BCryptPasswordEncoder();
    }
-   */
    
-
-	
+   
+   
 }
 
 @Configuration
