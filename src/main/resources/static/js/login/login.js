@@ -1,17 +1,20 @@
 /**
  * 
  */
+/**
+ * 
+ */
 $(document).ready(function(){
 	//vaildation();
 	
-	$("#userInfoBtn").click(function(){
+	$("#loginBtn").click(function(){
 		userInfoBtn();
 	});
 });
 
 function userInfoBtn(){
 	debugger;
-	document.aform.action = "/user/userInfo.do";
+	document.aform.action = "/login-process.do";
 	document.aform.submit();
 }
 

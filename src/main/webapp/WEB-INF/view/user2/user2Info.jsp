@@ -9,6 +9,7 @@
 <form id="aform" name="aform" method="post" >
 <input type="hidden" id="ip" name="ip" value="${input.ip}">
 
+
 	<div class="form-group">
 		<label for="userId">아이디</label> 
 		<input type="text" id="userId" name="userId" class="form-control" placeholder="아이디" >
@@ -35,7 +36,7 @@
 	</div>
 
 	<div class="from-group">
-		<button id="userInfoBtn" class="btn btn-info form-control">회원가입</button>
+		<button type="button" id="userInfoBtn" class="btn btn-info form-control">회원가입</button>
 	</div>
 	<!-- <div class="form-group">
 		<input type="checkbox" id="remember" name="remember" value="on" >
