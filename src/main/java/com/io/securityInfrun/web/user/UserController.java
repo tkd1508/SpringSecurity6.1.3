@@ -4,8 +4,8 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.UISMapUtil;
@@ -18,15 +18,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
 	
 	@Resource(name="userService")
 	UserService userService;
 	
-	@GetMapping("/user.do")
+	/*
+	 * 회원가입 페이지
+	 * */
+	@RequestMapping(value = "/userCreate.do", method = RequestMethod.POST)
 	public String user(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
-		System.out.print("path : user.do \n");
+		System.out.print("path : userCreate.do \n");
 		
 		UISMap input = UISMapUtil.getData(req);
 		UserVo userData = (UserVo) session.getAttribute("");
@@ -38,10 +42,13 @@ public class UserController {
 		
 		model.addAttribute("input", input);
 		
-		return "/user/userInfo";
+		return "/user/userCreate";
 	}
 	
-	@PostMapping("/userInfo.do")
+	/*
+	 * 회원가입 페이지 - 등록
+	 * */
+	@RequestMapping(value = "/userInsert.do", method = RequestMethod.POST)
 	public String userInfo(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
 		System.out.print("path : userInfo.do \n");
@@ -51,7 +58,7 @@ public class UserController {
 		
 		int result = -1;
 		try {
-			result = userService.userInfoInsert();
+			result = userService.userInfoInsert(input);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,8 +66,6 @@ public class UserController {
 		
 		System.out.print("Insert 성공!!");
 		
-		//model.addAttribute("input", input);
-		
-		return "/user/userInfo";
+		return "/user/userCreate";
 	}
 }
