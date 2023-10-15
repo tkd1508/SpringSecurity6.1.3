@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.io.securityInfrun.util.SimplePasswordEncoder;
 import com.io.securityInfrun.web.user.mapper.UserMapper;
 import com.io.securityInfrun.web.user.vo.UserVo;
 
@@ -30,12 +29,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		
-		UserVo users = userMapper.findUserInfo(email);
+		UserVo users = userMapper.findUserInfo(email); // 로그인.jsp에서의 아이디(이메일) 값을 조회한다.
 		if(users == null) {
 			 throw new UsernameNotFoundException("email [" + email + "] not found");
 		}
 		
-		String test = passwordEncoder.encode(users.getPassword());
+		//String test = passwordEncoder.encode(users.getPassword());
 		
 		System.out.println("**************Found user***************");
 		System.out.println("id : " + users.getRole());
@@ -48,7 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		//return userRoleCheck;
 		return User.builder()
                 .username(users.getEmail())
-                .password(passwordEncoder.encode(users.getPassword()))
+                .password(users.getPassword())
                 .roles(users.getRole())
                 .build();
 	}

@@ -18,15 +18,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
 	
 	@Resource(name="userService")
 	UserService userService;
 	
-	@RequestMapping(value = "/user.do", method = RequestMethod.GET)
+	/*
+	 * 회원가입 페이지
+	 * */
+	@RequestMapping(value = "/userCreate.do", method = RequestMethod.POST)
 	public String user(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
-		System.out.print("path : user.do \n");
+		System.out.print("path : userCreate.do \n");
 		
 		UISMap input = UISMapUtil.getData(req);
 		UserVo userData = (UserVo) session.getAttribute("");
@@ -38,10 +42,13 @@ public class UserController {
 		
 		model.addAttribute("input", input);
 		
-		return "/user/userInfo";
+		return "/user/userCreate";
 	}
 	
-	@RequestMapping(value = "/user/userInfo.do", method = RequestMethod.POST)
+	/*
+	 * 회원가입 페이지 - 등록
+	 * */
+	@RequestMapping(value = "/userInsert.do", method = RequestMethod.POST)
 	public String userInfo(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
 		System.out.print("path : userInfo.do \n");
@@ -59,8 +66,6 @@ public class UserController {
 		
 		System.out.print("Insert 성공!!");
 		
-		//model.addAttribute("input", input);
-		
-		return "/user/userInfo";
+		return "/login/login";
 	}
 }

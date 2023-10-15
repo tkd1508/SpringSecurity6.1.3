@@ -1,6 +1,7 @@
 package com.io.securityInfrun.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -8,19 +9,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import com.io.securityInfrun.util.PasswordEncoderFactories;
-import com.io.securityInfrun.util.SimplePasswordEncoder;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 import jakarta.servlet.DispatcherType;
 
@@ -197,7 +190,11 @@ public class SecurityConfig {
     	http.csrf().disable().cors().disable()
         .authorizeHttpRequests(request -> request
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
-				.requestMatchers(new AntPathRequestMatcher("/user.do"), new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), new AntPathRequestMatcher("/login.do"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"),new AntPathRequestMatcher("/util/**")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process"), 
+						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
+						new AntPathRequestMatcher("/login.do"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
+						new AntPathRequestMatcher("/util/**")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
         )
         .formLogin(login -> login	// form 방식 로그인 사용
@@ -238,24 +235,24 @@ public class SecurityConfig {
    }
    */
    
-    /*
+    
    @Bean
    public PasswordEncoder getPasswordEncoder() {
       return new BCryptPasswordEncoder();
    }
-   */
+   
    /*
    @Bean
    PasswordEncoder passwordEncoder() {
        return new SimplePasswordEncoder();
    }
    */
-    
+    /*
     @Bean
     PasswordEncoder passwordEncoder() {
         return new PasswordEncoderFactories().createDelegatingPasswordEncoder();
     }
-   
+   */
 }
 
 @Configuration

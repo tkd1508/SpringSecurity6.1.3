@@ -3,7 +3,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ include file="/WEB-INF/view/common/top.jspf"%>
 
-<script type="text/javascript" src="<c:url value='js/user/userInfo2.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/user/userInfo2.js'/>"></script>
 </head>
 <body>
 <form id="aform" name="aform" method="post" >

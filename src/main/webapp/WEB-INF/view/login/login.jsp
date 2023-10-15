@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/view/common/top.jspf"%>
 
-<script type="text/javascript" src="<c:url value='/login/login.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/login/login.js'/>"></script>
 </head>
 <%
 String id = "";
@@ -60,7 +60,7 @@ if (cookie != null) { // 쿠키가 있다면
 	</div> -->
 
 	<div class="from-group">
-		<a href="${pageContext.request.contextPath}/join.join" class="btn btn-info join" title="#">회원가입</a>
+		<button type="button" id="userCreateBtn" class="btn btn-info form-control" title="회원가입을 시도합니다.">회원가입</button>
 	</div>
 
 
