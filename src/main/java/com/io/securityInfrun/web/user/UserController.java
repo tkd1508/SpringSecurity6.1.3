@@ -4,8 +4,8 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.UISMapUtil;
@@ -23,7 +23,7 @@ public class UserController {
 	@Resource(name="userService")
 	UserService userService;
 	
-	@GetMapping("/user.do")
+	@RequestMapping(value = "/user.do", method = RequestMethod.GET)
 	public String user(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
 		System.out.print("path : user.do \n");
@@ -41,7 +41,7 @@ public class UserController {
 		return "/user/userInfo";
 	}
 	
-	@PostMapping("/userInfo.do")
+	@RequestMapping(value = "/user/userInfo.do", method = RequestMethod.POST)
 	public String userInfo(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
 		System.out.print("path : userInfo.do \n");
@@ -51,7 +51,7 @@ public class UserController {
 		
 		int result = -1;
 		try {
-			result = userService.userInfoInsert();
+			result = userService.userInfoInsert(input);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
