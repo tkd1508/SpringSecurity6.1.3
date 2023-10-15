@@ -23,20 +23,20 @@ if (cookie != null) { // 쿠키가 있다면
 }
 %>
 <body>
-<form id="aform" name="aform" method="post"  >
+<form id="aform" name="aform" method="post" action="${pageContext.request.contextPath}/login_action.join" >
 <input type="hidden" id="" name="" value="${a.a}">
 
 	<div class="form-group">
 		<label for="userId">아이디</label> 
-		<input type="text" id="username" name="username" class="form-control" placeholder="아이디" <%if (ison) {%> value="<%=id%>" <%}%>>
+		<input type="text" id="userId" name="userId" class="form-control" placeholder="아이디" <%if (ison) {%> value="<%=id%>" <%}%>>
 	</div>
 	<div class="form-group">
 		<label for="userPw">PASSWORD</label> 
-		<input type="text" name="password" id="password" class="form-control" placeholder="비밀번호">
+		<input type="password" name="userPw" id="userPw" class="form-control" placeholder="비밀번호">
 	</div>
 
 	<div class="from-group">
-		<button type="button" id="loginBtn" class="btn btn-info form-control" title="로그인을 시도합니다.">로그인</button>
+		<input type="submit" id="loginBtn" class="btn btn-info form-control" title="로그인을 시도합니다.">
 	</div>
 
 	<div class="form-group">
@@ -60,7 +60,7 @@ if (cookie != null) { // 쿠키가 있다면
 	</div> -->
 
 	<div class="from-group">
-		<button type="button" id="userCreateBtn" class="btn btn-info form-control" title="회원가입을 합니다.">회원가입</button>
+		<a href="${pageContext.request.contextPath}/join.join" class="btn btn-info join" title="#">회원가입</a>
 	</div>
 
 

@@ -1,43 +1,39 @@
 package com.io.securityInfrun.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import jakarta.servlet.DispatcherType;
 
 @Configuration 
 @EnableWebSecurity
 @Order(1)
 public class SecurityConfig {
 	
-	//@Autowired
+	@Autowired
 	UserDetailsService userDetailsService;
-	
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
-	}
-	
 	
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-     //antMatchers 부분도 deprecated 되어 requestMatchers로 대체
-       return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/login.do", "/css/**"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/js/**", "/images/**"), new AntPathRequestMatcher("/webjars/**", "/**/favicon.ico"), new AntPathRequestMatcher("/WEB-INF/**", "/view/**"));
+    // antMatchers 부분도 deprecated 되어 requestMatchers로 대체
+       return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/main", "/css/**"), new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/js/**", "/images/**"), new AntPathRequestMatcher("/webjars/**", "/**/favicon.ico"), new AntPathRequestMatcher("/WEB-INF/**", "/view/**"));
     }
 	
-    @Bean
-    public SecurityFilterChain allfilterChain(HttpSecurity http) throws Exception { 
+   @Bean
+   public SecurityFilterChain allfilterChain(HttpSecurity http) throws Exception { 
 	   
 	   /*
         http.authorizeRequests()
@@ -170,48 +166,28 @@ public class SecurityConfig {
         //SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL); // 이렇게 설정하면 메인과 자식에서의 시큐리티 정보는 쓰레드에서 이어진다. 상속 가능하게 됨.
         */
 	   
-    	
-    	/*
 	   http.csrf().disable();
 	   
 	   // 지금부터 프로젝트 셋팅을 시작한다
 	   
 	   http.authorizeRequests()
 	   		.requestMatchers(new AntPathRequestMatcher("/")).permitAll()                   // 기본 경로는 로그인을 안하고도 볼 수 있어야함
-	   		.requestMatchers(new AntPathRequestMatcher("/user/*")).hasRole("USER")         //유저 권한이 있는 사람만 접근 가능
+	   		.requestMatchers(new AntPathRequestMatcher("/user.do")).hasRole("USER")         //유저 권한이 있는 사람만 접근 가능
 	   		.requestMatchers(new AntPathRequestMatcher("/userInfo.do")).hasRole("USER")
 	   		.requestMatchers(new AntPathRequestMatcher("/messages")).hasRole("MANAGER")
 	   		.requestMatchers(new AntPathRequestMatcher("/config")).hasRole("ADMIN")
 	   		.anyRequest().authenticated()
 	   	.and()
 	   		.formLogin(); 
-	   */
 	   
-    	http.csrf().disable().cors().disable()
-        .authorizeHttpRequests(request -> request
-        	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
-				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process"), 
-						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
-						new AntPathRequestMatcher("/login.do"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
-						new AntPathRequestMatcher("/util/**")).permitAll()
-				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
-                .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
-        )
-        .formLogin(login -> login	// form 방식 로그인 사용
-        		.loginPage("/login.do")	// [A] 커스텀 로그인 페이지 지정
-                .loginProcessingUrl("/login-process.do")	// [B] submit 받을 url
-                .usernameParameter("username")	// [C] submit할 아이디
-                .passwordParameter("password")	// [D] submit할 비밀번호
-                .defaultSuccessUrl("/", true)	// 로그인 성공 시 /user/userInfo
-                .permitAll()	// 대시보드 이동이 막히면 안되므로 얘는 허용
-        )
-        .logout(withDefaults());	// 로그아웃은 기본설정으로 (/logout으로 인증해제)
+	   
+	   
 	   
 	   
         
       return http.build();
    }
-   /*
+   
    @Bean
    static final public InMemoryUserDetailsManager kk() { //DB연동을 안할 경우, 테스트 용으로 하는 것이다.
 	   
@@ -233,26 +209,15 @@ public class SecurityConfig {
            .build();
        return new InMemoryUserDetailsManager(user, admin, manager);
    }
-   */
    
-    
+   
    @Bean
    public PasswordEncoder getPasswordEncoder() {
       return new BCryptPasswordEncoder();
    }
    
-   /*
-   @Bean
-   PasswordEncoder passwordEncoder() {
-       return new SimplePasswordEncoder();
-   }
-   */
-    /*
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new PasswordEncoderFactories().createDelegatingPasswordEncoder();
-    }
-   */
+   
+   
 }
 
 @Configuration

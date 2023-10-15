@@ -6,10 +6,6 @@
          select * from user
     </select>
     
-    <select id="findUserInfo" parameterType="userVo" resultType="userVo">
-         select * from user where email = #{email}
-    </select>
-    
     <insert id="userInfoInsert">
          insert into user (
 			    user_name,
@@ -19,11 +15,7 @@
 			    role
          		) 
           value (
-			    #{user_name},
-			    #{password},
-			    #{email},
-			    #{age},
-			    #{role}
+			    'test','test','test','test','test'
           )
     </insert>
     

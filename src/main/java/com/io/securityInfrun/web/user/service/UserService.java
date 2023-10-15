@@ -5,14 +5,12 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.web.user.mapper.UserMapper;
 
 import jakarta.annotation.Resource;
-
 
 @Service("userService")
 public class UserService {
@@ -36,24 +34,20 @@ public class UserService {
 		}
 		
 		//result = userMapper.userInfoSelect();
+		
+		
 		return result; 
     }
 	
 	/*
 	 * 유저 정보 insert
 	 * */
-	public int userInfoInsert(UISMap input) throws SQLException {
+	public int userInfoInsert() throws SQLException {
 		int result = -1;
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	
-		String test = input.getString("password");
-		String test2 = passwordEncoder.encode(input.getString("password"));
-		input.setString("password", passwordEncoder.encode(input.getString("password")));
-		result = userMapper.userInfoInsert(input);
+		//ArrayList<UISMap> result2 = userMapper.userInfoSelect();
+		result = userMapper.userInfoInsert();
+		
 		return result; 
     }
-	
-	
-	
 	
 }

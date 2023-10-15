@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%-- <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>  --%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ include file="/WEB-INF/view/common/top.jspf"%>
 
-<script type="text/javascript" src="<c:url value='/js/user/userCreate.js'/>"></script>
+<script type="text/javascript" src="<c:url value='js/user/userInfo.js'/>"></script>
 </head>
 <body>
 <form id="aform" name="aform" method="post" >

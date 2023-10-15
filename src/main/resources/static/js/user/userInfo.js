@@ -10,7 +10,8 @@ $(document).ready(function(){
 });
 
 function userInfoBtn(){
-	document.aform.action = "/user/userInsert.do";
+	debugger;
+	document.aform.action = "/userInfo.do";
 	document.aform.submit();
 }
 

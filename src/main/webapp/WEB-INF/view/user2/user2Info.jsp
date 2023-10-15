@@ -3,12 +3,11 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ include file="/WEB-INF/view/common/top.jspf"%>
 
-<script type="text/javascript" src="<c:url value='/js/user/userInfo2.js'/>"></script>
+<script type="text/javascript" src="<c:url value='js/user/userInfo2.js'/>"></script>
 </head>
 <body>
 <form id="aform" name="aform" method="post" >
 <input type="hidden" id="ip" name="ip" value="${input.ip}">
-
 
 	<div class="form-group">
 		<label for="userId">아이디</label> 
@@ -36,7 +35,7 @@
 	</div>
 
 	<div class="from-group">
-		<button type="button" id="userInfoBtn" class="btn btn-info form-control">회원가입</button>
+		<button id="userInfoBtn" class="btn btn-info form-control">회원가입</button>
 	</div>
 	<!-- <div class="form-group">
 		<input type="checkbox" id="remember" name="remember" value="on" >
