@@ -5,6 +5,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.io.securityInfrun.web.user.service.CustomAuthenticationProvider;
 
 import jakarta.servlet.DispatcherType;
 
@@ -26,7 +29,13 @@ public class SecurityConfig {
 	UserDetailsService userDetailsService;
 	
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
+		//auth.userDetailsService(userDetailsService); //구현체 내부에서 userDetailsService 사용하니까 provider 검증 클래스가 만들어진 이후에는 안써도 됨. 
+		auth.authenticationProvider(authenticationProvider());
+	}
+	
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		return new CustomAuthenticationProvider();
 	}
 	
 	
