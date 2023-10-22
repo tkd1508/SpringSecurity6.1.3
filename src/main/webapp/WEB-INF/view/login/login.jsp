@@ -24,6 +24,11 @@ if (cookie != null) { // 쿠키가 있다면
 %>
 <body>
 
+<c:if test="${error != null}">
+	<span>${exception}</span>
+</c:if>
+
+
 <form id="aform" name="aform" method="post"  >
 <input type="hidden" id="" name="secret_key" value="kkk">
 

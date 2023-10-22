@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.UISMapUtil;
@@ -22,9 +23,14 @@ import jakarta.servlet.http.HttpSession;
 public class LoginController {
 	
 	@RequestMapping(value = "/login.do", method =  {RequestMethod.GET, RequestMethod.POST})
-    public String GetLogin() {
+    public String GetLogin(@RequestParam(value="error", required = false) String error, 
+    		@RequestParam(value="exception", required = false) String exception, ModelMap model) {
 		System.out.print("path : login.do \n");
-        return "/login/login";
+		
+		model.addAttribute("exception", exception);
+		model.addAttribute("error", error);
+        
+		return "/login/login";
     }
 	
 	@RequestMapping(value = "/login-process.do")

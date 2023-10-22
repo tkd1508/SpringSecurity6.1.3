@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -36,6 +37,9 @@ public class SecurityConfig {
 	
 	@Autowired
 	private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	
+	@Autowired
+	private AuthenticationFailureHandler customAuthenticationFailureHandler;
 	
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		//auth.userDetailsService(userDetailsService); //구현체 내부에서 userDetailsService 사용하니까 provider 검증 클래스가 만들어진 이후에는 안써도 됨. 
@@ -210,7 +214,7 @@ public class SecurityConfig {
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
 				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process.do"), 
 						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
-						new AntPathRequestMatcher("/login.do"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
+						new AntPathRequestMatcher("/login*"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
 						new AntPathRequestMatcher("/util/**")).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
@@ -223,6 +227,7 @@ public class SecurityConfig {
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .defaultSuccessUrl("/login-process.do", true)	// 로그인 성공 시 /user/userInfo
                 .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()	// 대시보드 이동이 막히면 안되므로 얘는 허용
         )
         .logout(withDefaults());	// 로그아웃은 기본설정으로 (/logout으로 인증해제)
