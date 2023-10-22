@@ -16,10 +16,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.io.securityInfrun.util.handler.CostomAccessDeniedHandler;
 import com.io.securityInfrun.web.user.service.CustomAuthenticationProvider;
 
 import jakarta.servlet.DispatcherType;
@@ -49,6 +51,13 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		return new CustomAuthenticationProvider();
+	}
+	
+	@Bean
+	public AccessDeniedHandler accessDeniedHandler() {
+		CostomAccessDeniedHandler accessDeniedHandler = new CostomAccessDeniedHandler();
+		accessDeniedHandler.setErrorPage("/denied.do");
+		return accessDeniedHandler;
 	}
 	
 	
@@ -230,7 +239,10 @@ public class SecurityConfig {
                 .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()	// 대시보드 이동이 막히면 안되므로 얘는 허용
         )
-        .logout(withDefaults());	// 로그아웃은 기본설정으로 (/logout으로 인증해제)
+        .logout(withDefaults()) // 로그아웃은 기본설정으로 (/logout으로 인증해제)
+        .exceptionHandling((exceptionConfig) -> exceptionConfig
+        		.accessDeniedHandler(accessDeniedHandler())
+        );	
 	   
 	   
         
