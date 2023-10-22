@@ -27,7 +27,7 @@ public class UserController {
 	/*
 	 * 회원가입 페이지
 	 * */
-	@RequestMapping(value = "/userCreate.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/userCreate.do", method =  {RequestMethod.GET, RequestMethod.POST})
 	public String user(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
 		
 		System.out.print("path : userCreate.do \n");

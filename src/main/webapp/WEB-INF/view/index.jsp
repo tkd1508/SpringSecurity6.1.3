@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/view/common/top.jspf"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,8 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-인덱스 시작 페이지 입니다2222
-
-${pageContext.request.contextPath}
+<%@ include file="/WEB-INF/view/common/header.jsp"%>
+<div>^^^^^^^^^^^^ 상단 ^^^^^^^^^^^^^</div>
+<br/>
+<div>메인 페이지가 될 공간입니다.</div>
+${pageContext.request.contextPath}  
 </body>
 </html>

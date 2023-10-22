@@ -23,16 +23,17 @@ if (cookie != null) { // 쿠키가 있다면
 }
 %>
 <body>
+
 <form id="aform" name="aform" method="post"  >
 <input type="hidden" id="" name="" value="${a.a}">
 
 	<div class="form-group">
 		<label for="userId">아이디</label> 
-		<input type="text" id="username" name="username" class="form-control" placeholder="아이디" <%if (ison) {%> value="<%=id%>" <%}%>>
+		<input type="text" id="username" name="username" class="form-control" placeholder="아이디" <%if (ison) {%> value="<%=id%>" <%}%> required autofocus>
 	</div>
 	<div class="form-group">
 		<label for="userPw">PASSWORD</label> 
-		<input type="text" name="password" id="password" class="form-control" placeholder="비밀번호">
+		<input type="text" name="password" id="password" class="form-control" placeholder="비밀번호" required>
 	</div>
 
 	<div class="from-group">
