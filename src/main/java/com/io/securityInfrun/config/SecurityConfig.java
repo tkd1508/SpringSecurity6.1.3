@@ -2,9 +2,11 @@ package com.io.securityInfrun.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.io.securityInfrun.web.user.service.CustomAuthenticationProvider;
@@ -27,6 +30,12 @@ public class SecurityConfig {
 	
 	//@Autowired
 	UserDetailsService userDetailsService;
+	
+	@Autowired
+	private AuthenticationDetailsSource authenticationDetailsSource;
+	
+	@Autowired
+	private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 	
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		//auth.userDetailsService(userDetailsService); //구현체 내부에서 userDetailsService 사용하니까 provider 검증 클래스가 만들어진 이후에는 안써도 됨. 
@@ -211,7 +220,9 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login-process.do")	// [B] submit 받을 url
                 .usernameParameter("username")	// [C] submit할 아이디
                 .passwordParameter("password")	// [D] submit할 비밀번호
+                .authenticationDetailsSource(authenticationDetailsSource)
                 .defaultSuccessUrl("/login-process.do", true)	// 로그인 성공 시 /user/userInfo
+                .successHandler(customAuthenticationSuccessHandler)
                 .permitAll()	// 대시보드 이동이 막히면 안되므로 얘는 허용
         )
         .logout(withDefaults());	// 로그아웃은 기본설정으로 (/logout으로 인증해제)

@@ -3,12 +3,15 @@ package com.io.securityInfrun.web.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.io.securityInfrun.util.FormWebAuthenticationDetails;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 	
@@ -34,6 +37,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 		}
 		
 		//======================================================== 여기까지 넘어오면 id와 password는 검증이 끝난 것이다. 이후 다양한 인증 검증 로직은 아래에 추가해주기.
+		
+		//로그인창에서의 secret 값 있는지 없는지로 검증
+		FormWebAuthenticationDetails f = (FormWebAuthenticationDetails) authentication.getDetails();
+		String secretKey = f.getSecretkey();
+		
+		if(secretKey == null || !"kkk".equals(secretKey)) {
+			throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
+		}
 		
 		//이제 토큰만들어주기
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

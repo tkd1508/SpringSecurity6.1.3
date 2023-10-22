@@ -25,7 +25,7 @@ if (cookie != null) { // 쿠키가 있다면
 <body>
 
 <form id="aform" name="aform" method="post"  >
-<input type="hidden" id="" name="" value="${a.a}">
+<input type="hidden" id="" name="secret_key" value="kkk">
 
 	<div class="form-group">
 		<label for="userId">아이디</label> 
