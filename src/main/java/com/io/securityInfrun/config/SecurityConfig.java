@@ -7,12 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,17 +19,16 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.io.securityInfrun.util.handler.CostomAccessDeniedHandler;
-import com.io.securityInfrun.web.user.service.CustomAuthenticationProvider;
 
 import jakarta.servlet.DispatcherType;
 
+@Order(1)
 @Configuration 
 @EnableWebSecurity
-@Order(1)
 public class SecurityConfig {
 	
 	//@Autowired
-	UserDetailsService userDetailsService;
+	//UserDetailsService userDetailsService;
 	
 	@Autowired
 	private AuthenticationDetailsSource authenticationDetailsSource;
@@ -43,23 +39,12 @@ public class SecurityConfig {
 	@Autowired
 	private AuthenticationFailureHandler customAuthenticationFailureHandler;
 	
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		//auth.userDetailsService(userDetailsService); //구현체 내부에서 userDetailsService 사용하니까 provider 검증 클래스가 만들어진 이후에는 안써도 됨. 
-		auth.authenticationProvider(authenticationProvider());
-	}
-	
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		return new CustomAuthenticationProvider();
-	}
-	
 	@Bean
 	public AccessDeniedHandler accessDeniedHandler() {
 		CostomAccessDeniedHandler accessDeniedHandler = new CostomAccessDeniedHandler();
 		accessDeniedHandler.setErrorPage("/denied.do");
 		return accessDeniedHandler;
 	}
-	
 	
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -69,7 +54,8 @@ public class SecurityConfig {
 	
     @Bean
     public SecurityFilterChain allfilterChain(HttpSecurity http) throws Exception { 
-	   
+    	
+    	
 	   /*
         http.authorizeRequests()
         	.requestMatchers("/login").permitAll()
@@ -202,11 +188,11 @@ public class SecurityConfig {
         */
 	   
     	
-    	/*
+    
 	   http.csrf().disable();
 	   
 	   // 지금부터 프로젝트 셋팅을 시작한다
-	   
+	   /*
 	   http.authorizeRequests()
 	   		.requestMatchers(new AntPathRequestMatcher("/")).permitAll()                   // 기본 경로는 로그인을 안하고도 볼 수 있어야함
 	   		.requestMatchers(new AntPathRequestMatcher("/user/*")).hasRole("USER")         //유저 권한이 있는 사람만 접근 가능
@@ -215,7 +201,7 @@ public class SecurityConfig {
 	   		.requestMatchers(new AntPathRequestMatcher("/config")).hasRole("ADMIN")
 	   		.anyRequest().authenticated()
 	   	.and()
-	   		.formLogin(); 
+	   		.formLogin()
 	   */
 	   
     	http.csrf().disable().cors().disable()
@@ -226,6 +212,7 @@ public class SecurityConfig {
 						new AntPathRequestMatcher("/login*"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
 						new AntPathRequestMatcher("/util/**")).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
+//				.requestMatchers(new AntPathRequestMatcher("/manager/**")).hasRole("MANAGER")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
         )
         .formLogin(login -> login	// form 방식 로그인 사용
@@ -242,10 +229,9 @@ public class SecurityConfig {
         .logout(withDefaults()) // 로그아웃은 기본설정으로 (/logout으로 인증해제)
         .exceptionHandling((exceptionConfig) -> exceptionConfig
         		.accessDeniedHandler(accessDeniedHandler())
-        );	
+        )
+        ;	
 	   
-	   
-        
       return http.build();
    }
    /*
@@ -283,32 +269,10 @@ public class SecurityConfig {
    PasswordEncoder passwordEncoder() {
        return new SimplePasswordEncoder();
    }
-   */
-    /*
+   
     @Bean
     PasswordEncoder passwordEncoder() {
         return new PasswordEncoderFactories().createDelegatingPasswordEncoder();
     }
    */
-}
-
-@Configuration
-@Order(2)
-class config2 {
-	/* 다중 로그인 테스트 _ 근데 안됨...
-	@Bean
-	public SecurityFilterChain adminfilterChain(HttpSecurity http) throws Exception { 
-		
-		
-		http.authorizeRequests()
-    	.requestMatchers("/admin/**")
-        .authenticated()
-        .and()
-        .httpBasic()
-    ;
-		
-		
-		return http.build();
-	}
-	*/
 }

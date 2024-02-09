@@ -10,9 +10,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.io.securityInfrun.util.FormWebAuthenticationDetails;
 
+@Service("customAuthenticationProvider")
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 	
 	@Autowired

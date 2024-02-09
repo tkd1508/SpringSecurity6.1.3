@@ -3,6 +3,8 @@ package com.io.securityInfrun.util.handler;
 import java.io.IOException;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -24,8 +26,12 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 		
 		if(exception instanceof BadCredentialsException){
 			errorMessage = "Invalid ID or PASSWORD";
-		}else if(exception instanceof InsufficientAuthenticationException) {
+		} else if(exception instanceof InsufficientAuthenticationException) {
 			errorMessage = "Invalid Secret Key";
+		} else if(exception instanceof DisabledException) {
+			errorMessage = "Locked";
+		} else if(exception instanceof CredentialsExpiredException) {
+			errorMessage = "Expried password";
 		}
 		
 		setDefaultFailureUrl("/login.do?error=true&exception=" + errorMessage);

@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		
 		//String test = passwordEncoder.encode(users.getPassword());
 		
-		System.out.println("**************Found user***************");
+		System.out.println("**************CustomUserDetailsService***************");
 		System.out.println("id : " + users.getRole());
 		
 		List<GrantedAuthority> roles = new ArrayList<>();

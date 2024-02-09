@@ -1,5 +1,7 @@
 package com.io.securityInfrun.web.test;
 
+import java.sql.*;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,13 +35,27 @@ public class IntroController {
 	public String getInts() {
 		System.out.println("path: / /n");
 		
+		Connection conn = null; // Connection 객체 생성 DB 연결
+		String driver = "com.mysql.cj.jdbc.Driver"; 
+		String url = "jdbc:mysql://localhost:3306/infunsecuritydb?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 		
+		Boolean connect = false;
 		
+		try{
+			Class.forName(driver); // JDBC 드라이버 로딩 Class.forName() 객체 사용
+			conn = DriverManager.getConnection(url,"root","0000"); // 드라이버와 url(주소), 계정아이디, 비번
+			// 드라이버를 로딩해주는 역활도 해주지만 더 중요한 Connection 객체를 생성해 준다. 
+	        // 객체가 생성되면 데이터베이스에 연결이 된다.
+			connect = true;
+			
+			conn.close();
+			
+		}catch(Exception e){
+			connect = false;
+			e.printStackTrace();
+		}
 		
 		//System.out.println("암호화: /k /n" + passwordEncode());
-		
-		
-		
 		
 		return "/index";
 	}

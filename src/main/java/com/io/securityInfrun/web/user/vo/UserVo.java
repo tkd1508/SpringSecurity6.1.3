@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.Data;
 
@@ -29,8 +28,7 @@ public class UserVo implements UserDetails{
 	}
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+		return user_name;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -52,18 +50,23 @@ public class UserVo implements UserDetails{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 	public int getUser_id() {
 		return user_id;
 	}
+	
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
+	
 	public String getUser_name() {
 		return user_name;
 	}
+	
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
+	
 	public String getEmail() {
 		return email;
 	}
