@@ -26,25 +26,9 @@ import jakarta.servlet.DispatcherType;
 @EnableWebSecurity
 public class AjaxSecurityConfig {
 	
-	private AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-	
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
         return new AjaxAuthenticationProvider();
-    }
-	
-	@Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter(AuthenticationManager authenticationManager) {
-        AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter();
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                   .authenticationProvider(ajaxAuthenticationProvider())
-                   .build();
     }
 	
 	@Bean
@@ -60,11 +44,6 @@ public class AjaxSecurityConfig {
 	@Bean
     public SecurityFilterChain allfilterChain2(HttpSecurity http) throws Exception { 
 		
-		// 추가된 코드
-		//ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean);
-		ajaxLoginProcessingFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
-		ajaxLoginProcessingFilter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
-
     	http.csrf().disable().cors().disable().securityMatcher("/api/**")
         .authorizeHttpRequests(request -> request
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
@@ -76,7 +55,22 @@ public class AjaxSecurityConfig {
         ; 	
         
       return http.build();
-   }
+    }
 	
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                   .authenticationProvider(ajaxAuthenticationProvider())
+                   .build();
+    }
+	
+	@Bean
+    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter(AuthenticationManager authenticationManager) {
+        AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter();
+        filter.setAuthenticationManager(authenticationManager);
+        filter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
+        return filter;
+    }	
 	
 }
