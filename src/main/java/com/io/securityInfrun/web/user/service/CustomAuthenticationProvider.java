@@ -75,10 +75,6 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			if (loadedUser == null) {
 				throw new InternalAuthenticationServiceException(
 						"UserDetailsService returned null, which is an interface contract violation");
-			}else if(!passwordEncoder.matches(password, loadedUser.getPassword())) {
-				//LLog.debug 기록해주고
-				throw new BadCredentialsException("패스워드가 일치하지 않습니다.");
-				//메세지 안뜨네 이것도 에러페이지 만들때 수정해주자
 			}
 			
 			//로그인창에서의 secret 값 있는지 없는지로 검증

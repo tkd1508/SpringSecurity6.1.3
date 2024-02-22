@@ -2,11 +2,18 @@ package com.io.securityInfrun.util;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.io.securityInfrun.web.user.vo.UserVo;
@@ -21,10 +28,30 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 	// json으로 받을거니까 담을 그릇만들기
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
+	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+
+	public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+
+	private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/login");
+	
+	private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+
+	private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+
+	private boolean postOnly = true;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	public AjaxLoginProcessingFilter() {
-		super(new AntPathRequestMatcher("/api/login")); //해당 url로 요청이 된게 아니라면 필터를 하지 않은다.
-		// TODO Auto-generated constructor stub
+		super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
+	}
+	
+	public AjaxLoginProcessingFilter(AuthenticationManager authenticationManager) {
+		super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
 	}
 
 	@Override
@@ -44,10 +71,11 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 		}
 		
 		//값이 다 들어가 있으면 token 만들어주는 곳.
-		AjaxAuthentivationToken ajaxAuthentivationToken = new AjaxAuthentivationToken(userDetails.getUsername(), userDetails.getPassword());
+		UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(userDetails.getUsername(), userDetails.getPassword());
 		
+		setDetails(request, authRequest);
 		//매니저에다가 우리가 만든 토큰을 전달하면 인증처리가 이루어진다.
-		return getAuthenticationManager().authenticate(ajaxAuthentivationToken); 
+		return getAuthenticationManager().authenticate(authRequest);
 	}
 
 	private boolean isAjax(HttpServletRequest request) {
@@ -58,5 +86,40 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 		}
 		return false;
 	}
+	
+	@Nullable
+	protected String obtainPassword(HttpServletRequest request) {
+		return request.getParameter(this.passwordParameter);
+	}
+	
+	@Nullable
+	protected String obtainUsername(HttpServletRequest request) {
+		return request.getParameter(this.usernameParameter);
+	}
+	
+	protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
+		authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
+	}
+	
+	public void setUsernameParameter(String usernameParameter) {
+		Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
+		this.usernameParameter = usernameParameter;
+	}
+	
+	public void setPasswordParameter(String passwordParameter) {
+		Assert.hasText(passwordParameter, "Password parameter must not be empty or null");
+		this.passwordParameter = passwordParameter;
+	}
+	
+	public void setPostOnly(boolean postOnly) {
+		this.postOnly = postOnly;
+	}
 
+	public final String getUsernameParameter() {
+		return this.usernameParameter;
+	}
+
+	public final String getPasswordParameter() {
+		return this.passwordParameter;
+	}
 }

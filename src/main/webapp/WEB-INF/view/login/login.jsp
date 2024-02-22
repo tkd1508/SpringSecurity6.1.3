@@ -69,7 +69,10 @@ if (cookie != null) { // 쿠키가 있다면
 		<button type="button" id="userCreateBtn" class="btn btn-info form-control" title="회원가입을 시도합니다.">회원가입</button>
 	</div>
 
-
+	<div class="pull-right">
+        <button type="button" class="btn btn-sm btn-primary" onclick="getMessege();">getMessege()</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="admin();">admin()</button>
+    </div>
 
 
 

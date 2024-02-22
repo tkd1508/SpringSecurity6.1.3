@@ -6,11 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.UISMapUtil;
@@ -81,6 +81,40 @@ public class LoginController {
 		model.addAttribute("username", userDetails.getUsername());
 		
 		return "/login/denied";
+	}
+	
+	@RequestMapping(value = "/api/messages.do", method =  {RequestMethod.GET})
+	@ResponseBody
+	public String apiMessage(HttpServletRequest request, HttpServletResponse response) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		;
+		String kk = "권한 없음";
+		
+		/*
+		if(authentication != null || authentication.getAuthorities().toString() != "[ROLE_ANONYMOUS]") {
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			kk = userDetails.getAuthorities().toString();
+		}*/
+		
+		System.out.println("■■■■■■■■■■■■■■22■■■■■■■■■■■■ "+authentication.getAuthorities().toString());
+		return "ok messages";
+	}
+	
+	@RequestMapping(value = "/api/messages2.do", method =  {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public String apiMessage2() {
+		
+		return "ok messages22";
+	}
+	
+	
+	@RequestMapping(value = "/sample/ajaxTest", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView ajaxTest() {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("testJson", "ajaxTest");
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
 }

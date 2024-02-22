@@ -6,10 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.UISMapUtil;
-import com.io.securityInfrun.web.user.service.UserService;
 import com.io.securityInfrun.web.user.vo.UserVo;
 import com.io.securityInfrun.web.user2.service.User2Service;
 
@@ -63,5 +64,15 @@ public class User2Controller {
 		//model.addAttribute("input", input);
 		
 		return "/user2/user2Info";
+	}
+	
+	@RequestMapping(value = "/user3.do", method =  {RequestMethod.GET, RequestMethod.POST})
+	public String user3(HttpSession session, HttpServletRequest req, HttpServletResponse res, ModelMap model) {
+		
+		System.out.print("path : user3.do \n");
+		
+		//model.addAttribute("input", input);
+		
+		return "user3";
 	}
 }

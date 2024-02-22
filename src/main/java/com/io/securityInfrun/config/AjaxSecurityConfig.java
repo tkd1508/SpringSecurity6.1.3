@@ -12,9 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.io.securityInfrun.util.AjaxLoginProcessingFilter;
+import com.io.securityInfrun.util.entryPoint.AjaxAccessDeniedHandler;
+import com.io.securityInfrun.util.entryPoint.AjaxLoginAuthenticationEntryPoint;
 import com.io.securityInfrun.util.handler.AjaxAuthenticationFailureHandler;
 import com.io.securityInfrun.util.handler.AjaxAuthenticationSuccessHandler;
 import com.io.securityInfrun.web.user.service.AjaxAuthenticationProvider;
@@ -26,9 +31,27 @@ import jakarta.servlet.DispatcherType;
 @EnableWebSecurity
 public class AjaxSecurityConfig {
 	
+	private AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter();
+	
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
         return new AjaxAuthenticationProvider();
+    }
+	
+	@Bean
+    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter(AuthenticationManager authenticationManager) {
+        filter.setAuthenticationManager(authenticationManager);
+        filter.setSecurityContextRepository(delegatingSecurityContextRepository());
+        filter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
+        return filter;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                   .authenticationProvider(ajaxAuthenticationProvider())
+                   .build();
     }
 	
 	@Bean
@@ -42,35 +65,41 @@ public class AjaxSecurityConfig {
     }
 	
 	@Bean
-    public SecurityFilterChain allfilterChain2(HttpSecurity http) throws Exception { 
-		
-    	http.csrf().disable().cors().disable().securityMatcher("/api/**")
-        .authorizeHttpRequests(request -> request
-        	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
-				.requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll() //여기 경로만 탈때 ajaxSecuriyConfig가 작동을 하게 되는 것이다.
-				//.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
-                .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
-        )
-        .addFilterBefore(ajaxLoginProcessingFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class);
-        ; 	
-        
-      return http.build();
-    }
-	
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                   .authenticationProvider(ajaxAuthenticationProvider())
-                   .build();
+	public AjaxAccessDeniedHandler ajaxAccessDeniedHandler() {
+        return new AjaxAccessDeniedHandler();
     }
 	
 	@Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter(AuthenticationManager authenticationManager) {
-        AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter();
-        filter.setAuthenticationManager(authenticationManager);
-        filter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
-        filter.setAuthenticationFailureHandler(ajaxAuthenticationFailureHandler());
-        return filter;
-    }	
+	public DelegatingSecurityContextRepository delegatingSecurityContextRepository() {
+        return new DelegatingSecurityContextRepository(
+        		new RequestAttributeSecurityContextRepository(), 
+        		new HttpSessionSecurityContextRepository());
+    }
+	
+	@Bean
+    public SecurityFilterChain allfilterChain2(HttpSecurity http) throws Exception { 
+		
+    	http
+    	.csrf(csrf ->csrf.disable())
+    	.cors(cors ->cors.disable())
+    	.securityMatcher("/api/**")
+    	//.sessionManagement(management ->management
+        //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))//IF_REQUIRED
+        .authorizeHttpRequests(req -> req
+        	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
+				.requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll() //여기 경로만 탈때 ajaxSecuriyConfig가 작동을 하게 되는 것이다.
+				.requestMatchers(new AntPathRequestMatcher("/api/messages.do")).hasRole("MANAGER")
+                .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
+        )
+        .addFilterAfter(ajaxLoginProcessingFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(handling ->handling
+        		.authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+        		.accessDeniedHandler(ajaxAccessDeniedHandler())
+        )
+        ; 	
+        
+      return http.build();
+   }
+	
 	
 }
