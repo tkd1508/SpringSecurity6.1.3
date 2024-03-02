@@ -71,7 +71,7 @@ public class LoginController {
 		return "redirect:/";
 	}
 	
-	@RequestMapping(value = "/denied.do", method =  {RequestMethod.GET})
+	@RequestMapping(value = {"/denied.do","/api/denied.do"}, method =  {RequestMethod.GET})
 	public String accessDenied(@RequestParam(value="exception", required = false) String exception, ModelMap model) {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

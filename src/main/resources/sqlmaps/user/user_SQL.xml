@@ -7,7 +7,11 @@
     </select>
     
     <select id="findUserInfo" parameterType="userVo" resultType="userVo">
-         select * from user where email = #{email}
+        SELECT u.*, r.role_desc as role
+		FROM user u
+		INNER JOIN user_role ur ON u.user_id = ur.user_id
+		INNER JOIN role r ON ur.role_id = r.role_id
+		WHERE u.user_name = #{email};
     </select>
     
     <insert id="userInfoInsert">

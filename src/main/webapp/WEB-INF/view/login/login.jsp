@@ -31,6 +31,8 @@ if (cookie != null) { // 쿠키가 있다면
 
 <form id="aform" name="aform" method="post"  >
 <input type="hidden" id="" name="secret_key" value="kkk">
+<input type="hidden" name="_csrf" value="${_csrf.token}"/>
+<input type="hidden" name="_csrf_header" value="${_csrf.headerName}"/>
 
 	<div class="form-group">
 		<label for="userId">아이디</label> 

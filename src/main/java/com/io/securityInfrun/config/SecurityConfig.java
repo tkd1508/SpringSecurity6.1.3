@@ -2,6 +2,8 @@ package com.io.securityInfrun.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,9 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.io.securityInfrun.util.UISMap;
 import com.io.securityInfrun.util.handler.CostomAccessDeniedHandler;
+import com.io.securityInfrun.web.urlPathAuth.service.UrlPathAuthService;
 import com.io.securityInfrun.web.user.service.CustomAuthenticationProvider;
 
 import jakarta.servlet.DispatcherType;
@@ -31,6 +35,13 @@ public class SecurityConfig {
 	//@Autowired
 	//UserDetailsService userDetailsService;
 	
+	private final UrlPathAuthService urlPathAuthService;
+	
+	public SecurityConfig(UrlPathAuthService urlPathAuthService) {
+		super();
+		this.urlPathAuthService = urlPathAuthService;
+	}
+
 	@Autowired
 	private AuthenticationDetailsSource authenticationDetailsSource;
 	
@@ -66,11 +77,27 @@ public class SecurityConfig {
 	    return authenticationConfiguration.getAuthenticationManager();
 	  }
 	*/
+	/*
+	@Bean
+    public AuthenticationManager customAuthorizationFilter(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                   .authenticationProvider(ajaxAuthenticationProvider())
+                   .build();
+    }
+	*/
+	
+	/*
+	@Bean
+	public CustomAuthorizationFilter customAuthorizationFilter() {
+		CustomAuthorizationFilter customAuthorizationFilter = new CustomAuthorizationFilter();
+		
+		return customAuthorizationFilter;
+	}
+	*/
 	
     @SuppressWarnings("unchecked")
 	@Bean
     public SecurityFilterChain allfilterChain(HttpSecurity http) throws Exception {
-
 
         /*
          http.authorizeRequests()
@@ -204,8 +231,6 @@ public class SecurityConfig {
        
         
     
-        http.csrf(csrf -> csrf.disable());
-	   
 	   // 지금부터 프로젝트 셋팅을 시작한다
 	   /*
 	   http.authorizeRequests()
@@ -218,18 +243,40 @@ public class SecurityConfig {
 	   	.and()
 	   		.formLogin()
 	   */
-	   
-    	http.csrf(csrf ->csrf.disable()).cors(cors ->cors.disable())
+    	
+    	ArrayList<UISMap> urlPathAuths = urlPathAuthService.setUrlPathAuth();
+    	
+    	for(UISMap urlPathAuth : urlPathAuths) {
+    		http.authorizeHttpRequests(a->
+    			a.requestMatchers(new AntPathRequestMatcher(urlPathAuth.getString("url_path_name"))).hasRole(urlPathAuth.getString("role_desc"))
+    		);
+    	}
+    	
+    	http
+    	.authorizeHttpRequests(request -> request
+        	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
+				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process.do"), 
+						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
+						new AntPathRequestMatcher("/login*"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
+						new AntPathRequestMatcher("/util/**")).permitAll()
+                .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
+        )
+    	;
+    	
+    	http
+    	/*.csrf(csrf ->csrf.disable())
+    	//.cors(cors ->cors.disable())
         .authorizeHttpRequests(request -> request
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
 				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process.do"), 
 						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
 						new AntPathRequestMatcher("/login*"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
 						new AntPathRequestMatcher("/util/**")).permitAll()
-				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do")).hasRole("ADMIN")
-				.requestMatchers(new AntPathRequestMatcher("/user3.do")).hasRole("MANAGER")
+				.requestMatchers(new AntPathRequestMatcher("/user2.do"), new AntPathRequestMatcher("/user2Info.do"), new AntPathRequestMatcher("/config.do")).hasRole("ADMIN")
+				.requestMatchers(new AntPathRequestMatcher("/user3.do"), new AntPathRequestMatcher("/messages.do")).hasRole("MANAGER")
+				.requestMatchers(new AntPathRequestMatcher("/mypage.do")).hasRole("USER")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
-        )
+        )*/
         .formLogin(login -> login	// form 방식 로그인 사용
         		.loginPage("/login.do")	// [A] 커스텀 로그인 페이지 지정
                 .loginProcessingUrl("/login-process.do")	// [B] submit 받을 url
@@ -298,4 +345,5 @@ public class SecurityConfig {
         return new PasswordEncoderFactories().createDelegatingPasswordEncoder();
     }
    */
+   
 }

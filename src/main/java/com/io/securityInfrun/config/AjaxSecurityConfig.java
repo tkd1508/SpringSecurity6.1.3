@@ -17,7 +17,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.io.securityInfrun.util.AjaxLoginProcessingFilter;
+import com.io.securityInfrun.util.Filter.AjaxLoginProcessingFilter;
 import com.io.securityInfrun.util.entryPoint.AjaxAccessDeniedHandler;
 import com.io.securityInfrun.util.entryPoint.AjaxLoginAuthenticationEntryPoint;
 import com.io.securityInfrun.util.handler.AjaxAuthenticationFailureHandler;
@@ -80,7 +80,7 @@ public class AjaxSecurityConfig {
     public SecurityFilterChain allfilterChain2(HttpSecurity http) throws Exception { 
 		
     	http
-    	.csrf(csrf ->csrf.disable())
+    	//.csrf(csrf ->csrf.disable())
     	.cors(cors ->cors.disable())
     	.securityMatcher("/api/**")
     	//.sessionManagement(management ->management
