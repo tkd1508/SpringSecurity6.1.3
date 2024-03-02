@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.io.securityInfrun.web.urlPathAuth.mapper.UrlPathAuthMapper">
+    
+    <select id="setUrlPathAuth" parameterType="uisMap" resultType="uisMap">
+        select distinct up.url_path_name, r.role_desc
+		from url_path up
+		join url_path_role upr on up.url_path_id = upr.url_path_id
+		join role r on upr.role_id = r.role_id
+    </select>
+    
+</mapper>
