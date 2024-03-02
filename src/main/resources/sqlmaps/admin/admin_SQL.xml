@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.io.securityInfrun.web.admin.mapper.AdminMapper">
+    
+    <insert id="insertRole">
+    	insert into role (
+			    role_name,
+			    role_desc,
+         		) 
+          value (
+			    #{role_name},
+			    #{role_desc}
+          )
+    </insert>
+    
+    <update id="updateRole">
+		update role set
+			role_name = #{role_name},
+			role_desc = #{role_desc}
+		where role_id = #{role_id}
+    </update>
+    
+    <delete id="deleteRole">
+    	delete from role 
+    	where role_id = #{role_id}
+    </delete>
+    
+    
+    <!-- 3정규형 table (url_path_role) start-->
+    <insert id="insertUrlPathRole">
+    	insert into url_path_role (
+			    role_id,
+			    url_path_id,
+         		) 
+          value (
+			    #{role_id},
+			    #{url_path_id}
+          )
+    </insert>
+    
+    <update id="updateUrlPathRole">
+		update url_path_role set
+			role_id = #{role_id},
+			url_path_id = #{url_path_id}
+		where role_id = #{role_id}
+		  and url_path_id = #{url_path_id}
+    </update>
+    
+    <delete id="deleteUrlPathRole">
+    	delete from url_path_role 
+    	where role_id = #{role_id}
+		  and url_path_id = #{url_path_id};
+    </delete>
+    <!-- 3정규형 table (url_path_role) end-->
+</mapper>

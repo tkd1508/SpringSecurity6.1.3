@@ -244,12 +244,22 @@ public class SecurityConfig {
 	   		.formLogin()
 	   */
     	
+    	//큰 범위가 아래로 와야하고 작은 범위가 위로가야한다. (관리자가 위에 사용자가 아래로 가야한다.)
     	ArrayList<UISMap> urlPathAuths = urlPathAuthService.setUrlPathAuth();
     	
     	for(UISMap urlPathAuth : urlPathAuths) {
-    		http.authorizeHttpRequests(a->
-    			a.requestMatchers(new AntPathRequestMatcher(urlPathAuth.getString("url_path_name"))).hasRole(urlPathAuth.getString("role_desc"))
-    		);
+    		if(urlPathAuth.getString("roles").indexOf(",") == -1) {
+    			http.authorizeHttpRequests(authz-> authz
+        				.requestMatchers(new AntPathRequestMatcher(urlPathAuth.getString("url_path_name")))
+        				.hasRole(urlPathAuth.getString("roles"))
+        		);
+    		}else {
+    			String[] arrRoles = urlPathAuth.getString("roles").split(",");
+    			http.authorizeHttpRequests(authz-> authz
+        				.requestMatchers(new AntPathRequestMatcher(urlPathAuth.getString("url_path_name")))
+        				.hasAnyRole(arrRoles)
+        		);
+    		}
     	}
     	
     	http
@@ -344,6 +354,17 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder() {
         return new PasswordEncoderFactories().createDelegatingPasswordEncoder();
     }
+   */
+   
+   /*
+   private AuthorizationManager<RequestAuthorizationContext> adminAccess() {
+       return (authentication, context) -> {
+           // 여기서 authentication.get()을 호출하여 실제 Authentication 객체를 얻습니다.
+           boolean isAdmin = authentication.get().getAuthorities().stream()
+                   .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+           return new AuthorizationDecision(isAdmin);
+       };
+   }
    */
    
 }

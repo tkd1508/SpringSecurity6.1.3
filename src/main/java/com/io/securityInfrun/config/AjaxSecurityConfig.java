@@ -88,7 +88,7 @@ public class AjaxSecurityConfig {
         .authorizeHttpRequests(req -> req
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
 				.requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll() //여기 경로만 탈때 ajaxSecuriyConfig가 작동을 하게 되는 것이다.
-				.requestMatchers(new AntPathRequestMatcher("/api/messages.do")).hasRole("MANAGER")
+				.requestMatchers(new AntPathRequestMatcher("/api/messages.do")).hasAnyRole("ADMIN","MANAGER") //hasRole("MANAGER")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
         )
         .addFilterAfter(ajaxLoginProcessingFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class)

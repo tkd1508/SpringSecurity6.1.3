@@ -3,10 +3,41 @@
 <mapper namespace="com.io.securityInfrun.web.urlPathAuth.mapper.UrlPathAuthMapper">
     
     <select id="setUrlPathAuth" parameterType="uisMap" resultType="uisMap">
-        select distinct up.url_path_name, r.role_desc
-		from url_path up
-		join url_path_role upr on up.url_path_id = upr.url_path_id
-		join role r on upr.role_id = r.role_id
+        SELECT u.url_path_name, GROUP_CONCAT(r.role_desc SEPARATOR ',') AS roles, u.order_num
+		FROM url_path u
+		INNER JOIN url_path_role ur ON u.url_path_id = ur.url_path_id
+		INNER JOIN infunsecuritydb.role r ON ur.role_id = r.role_id
+		GROUP BY u.url_path_name, u.order_num
+		ORDER BY u.order_num
     </select>
+    
+    <insert id="insertUrlPath">
+    	insert into url_path (
+			    http_mathod,
+			    order_num,
+			    url_path_name,
+			    url_path_type
+         		) 
+          value (
+			    #{http_mathod},
+			    #{order_num},
+			    #{url_path_name},
+			    #{url_path_type},
+          )
+    </insert>
+    
+    <update id="updateUrlPath">
+		update url_path set
+			http_mathod = #{http_mathod},
+			order_num = #{order_num},
+			url_path_name = #{url_path_name},
+			url_path_type = #{url_path_type}
+		where url_path_id = #{url_path_id}
+    </update>
+    
+    <delete id="deleteUrlPath">
+    	delete from url_path 
+    	where url_path_id = #{url_path_id}
+    </delete>
     
 </mapper>
