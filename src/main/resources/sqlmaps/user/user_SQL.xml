@@ -3,7 +3,10 @@
 <mapper namespace="com.io.securityInfrun.web.user.mapper.UserMapper">
 
     <select id="userInfoSelect" parameterType="uisMap" resultType="uisMap">
-         select * from user
+        SELECT u.*, r.role_desc as role
+		FROM user u
+		INNER JOIN user_role ur ON u.user_id = ur.user_id
+		INNER JOIN role r ON ur.role_id = r.role_id
     </select>
     
     <select id="findUserInfo" parameterType="userVo" resultType="userVo">
@@ -12,6 +15,14 @@
 		INNER JOIN user_role ur ON u.user_id = ur.user_id
 		INNER JOIN role r ON ur.role_id = r.role_id
 		WHERE u.user_name = #{email}
+    </select>
+    
+    <select id="findUserInfo2" parameterType="uisMap" resultType="uisMap">
+        SELECT u.*, r.role_desc as role
+		FROM user u
+		INNER JOIN user_role ur ON u.user_id = ur.user_id
+		INNER JOIN role r ON ur.role_id = r.role_id
+		WHERE u.user_id = #{id}
     </select>
     
     <insert id="userInfoInsert">

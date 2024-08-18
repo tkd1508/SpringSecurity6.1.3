@@ -263,12 +263,14 @@ public class SecurityConfig {
     	}
     	
     	http
+    	//.csrf(csrf ->csrf.disable())
+    	.cors(cors ->cors.disable())
     	.authorizeHttpRequests(request -> request
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
-				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process.do"), 
-						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), 
+				.requestMatchers(new AntPathRequestMatcher("/user/**"), new AntPathRequestMatcher("/login-process.do"), new AntPathRequestMatcher("/signup.do"), 
+						new AntPathRequestMatcher("/"), new AntPathRequestMatcher("/status/**"), new AntPathRequestMatcher("/images/**"), new AntPathRequestMatcher("/css/**"),
 						new AntPathRequestMatcher("/login*"), new AntPathRequestMatcher("/auth/join"), new AntPathRequestMatcher("/js/**"), 
-						new AntPathRequestMatcher("/util/**")).permitAll()
+						new AntPathRequestMatcher("/util/**"), new AntPathRequestMatcher("/favicon.*"), new AntPathRequestMatcher("/*/icon-*")).permitAll()
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
         )
     	;

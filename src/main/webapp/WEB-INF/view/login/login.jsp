@@ -52,6 +52,10 @@ if (cookie != null) { // 쿠키가 있다면
 		<label for="remember">아이디기억하기</label>
 		<div>
 			<a href="search_login.jsp" title="" id="">아이디/비밀번호 찾기</a>
+			
+			
+			
+			안녕하세요
 		</div>
 	</div>
 	

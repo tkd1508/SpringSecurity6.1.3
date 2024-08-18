@@ -57,7 +57,7 @@ public class IntroController {
 		
 		//System.out.println("암호화: /k /n" + passwordEncode());
 		
-		return "/index";
+		return "/dashboard";
 	}
 	
 	
@@ -86,6 +86,24 @@ public class IntroController {
 		return "index";
 	}
 	
+	@GetMapping(value="/user")
+	public String user() {
+		return "/user";
+	}
+
+	@GetMapping(value="/manager")
+	public String manager() {
+		return "/manager";
+	}
+
+	@GetMapping(value="/admin")
+	public String admin() {
+		return "/admin";
+	}
 	
+	@GetMapping(value="/api")
+	public String restDashboard() {
+		return "rest/dashboard";
+	}
 	
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -27,13 +29,24 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         data.put("status", "success");
         data.put("message", "Authentication successful");
         data.put("redirect", "/api/messages.do");
-        //data.put("sessionId", session.getId()); // 클라이언트에 세션 ID 전송
+        data.put("sessionId", request.getRequestedSessionId()); // 클라이언트에 세션 ID 전송
         data.put("authentication", authentication.getPrincipal());
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
        objectMapper.writeValue(response.getWriter(), data);
+       
+       clearAuthenticationAttributes(request);
 		
 	}
+	
+	protected final void clearAuthenticationAttributes(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return;
+        }
+        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+    }
+	
 }

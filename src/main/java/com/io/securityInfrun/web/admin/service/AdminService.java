@@ -28,4 +28,15 @@ public class AdminService {
 		return 0; 
     }
 	
+	/*
+	 * 권한 리스트 조회
+	 * */
+	public ArrayList<UISMap> selectRole() {
+        
+		ArrayList<UISMap> result = null;
+		
+		result = adminMapper.selectRole();
+		return result; 
+    }
+	
 }

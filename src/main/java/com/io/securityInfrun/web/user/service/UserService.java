@@ -27,15 +27,18 @@ public class UserService {
         
 		ArrayList<UISMap> result = null;
 		
-		try {
-			String ip = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("IP를 찾을 수 없습니다.");
-		}
+		result = userMapper.userInfoSelect();
+		return result; 
+    }
+	
+	/*
+	 * 유저 정보 리스트 조회
+	 * */
+	public UISMap findUserInfo2(int id) {
+        
+		UISMap result = null;
 		
-		//result = userMapper.userInfoSelect();
+		result = userMapper.findUserInfo2(id);
 		return result; 
     }
 	

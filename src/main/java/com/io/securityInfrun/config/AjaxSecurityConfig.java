@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -31,7 +32,7 @@ import jakarta.servlet.DispatcherType;
 @EnableWebSecurity
 public class AjaxSecurityConfig {
 	
-	private AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter();
+	private AjaxLoginProcessingFilter filter;
 	
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
@@ -49,6 +50,7 @@ public class AjaxSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    	filter = new AjaxLoginProcessingFilter(http);
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                    .authenticationProvider(ajaxAuthenticationProvider())
                    .build();
@@ -87,8 +89,12 @@ public class AjaxSecurityConfig {
         //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))//IF_REQUIRED
         .authorizeHttpRequests(req -> req
         	    .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 맨 처음
-				.requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll() //여기 경로만 탈때 ajaxSecuriyConfig가 작동을 하게 되는 것이다.
-				.requestMatchers(new AntPathRequestMatcher("/api/messages.do")).hasAnyRole("ADMIN","MANAGER") //hasRole("MANAGER")
+        	    //.requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*").permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/api/login"), new AntPathRequestMatcher("/api")).permitAll() //여기 경로만 탈때 ajaxSecuriyConfig가 작동을 하게 되는 것이다.
+				//.requestMatchers(new AntPathRequestMatcher("/api/messages.do")).hasAnyRole("ADMIN","MANAGER") //hasRole("MANAGER")
+				.requestMatchers(new AntPathRequestMatcher("/api/user")).hasAuthority("ROLE_USER")
+				.requestMatchers(new AntPathRequestMatcher("/api/manager")).hasAuthority("ROLE_MANAGER")
+				.requestMatchers(new AntPathRequestMatcher("/api/admin")).hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
         )
         .addFilterAfter(ajaxLoginProcessingFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter.class)

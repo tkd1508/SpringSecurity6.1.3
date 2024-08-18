@@ -14,6 +14,7 @@ public interface UserMapper {
 
 	public UserVo findUserInfo(String username);
 	public ArrayList<UISMap> userInfoSelect();
+	public UISMap findUserInfo2(int id);
 	public int userInfoInsert(UISMap input);
 	
 	

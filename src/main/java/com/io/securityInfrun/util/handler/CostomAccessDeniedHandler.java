@@ -18,6 +18,9 @@ public class CostomAccessDeniedHandler implements AccessDeniedHandler{
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		String deniedUrl = errorPage + "?exception=" + accessDeniedException.getMessage();
+		
+		System.out.println(deniedUrl);
+		
 		response.sendRedirect(deniedUrl);
 	}
 

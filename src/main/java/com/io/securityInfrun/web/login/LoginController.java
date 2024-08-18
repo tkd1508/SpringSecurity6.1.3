@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,15 +24,20 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class LoginController {
 	
+	@GetMapping(value="/signup.do")
+    public String signup() {
+		System.out.print("path : signup \n");
+        return "login/signup";
+    }
+	
 	@RequestMapping(value = "/login.do", method =  {RequestMethod.GET, RequestMethod.POST})
-    public String GetLogin(@RequestParam(value="error", required = false) String error, 
-    		@RequestParam(value="exception", required = false) String exception, ModelMap model) {
+    public String GetLogin(@RequestParam(value="error", required = false) String error, @RequestParam(value="exception", required = false) String exception, ModelMap model) {
 		System.out.print("path : login.do \n");
 		
 		model.addAttribute("exception", exception);
 		model.addAttribute("error", error);
         
-		return "/login/login";
+		return "login/login";
     }
 	
 	@RequestMapping(value = "/login-process.do")
@@ -48,7 +54,7 @@ public class LoginController {
 		 * boolean isValidMember = memberService.isValidMember(dto.getUserid(),
 		 * dto.getPw()); if (isValidMember) return "dashboard";
 		 */
-	    return "/index";
+	    return "login/signup";
 	}
 	
 	@RequestMapping(value = "/logout.do", method =  {RequestMethod.GET, RequestMethod.POST})
@@ -65,10 +71,7 @@ public class LoginController {
 			new SecurityContextLogoutHandler().logout(req, res, authentication);
 		}
 		
-		
-		model.addAttribute("input", input);
-		
-		return "redirect:/";
+		return "login/denied";
 	}
 	
 	@RequestMapping(value = {"/denied.do","/api/denied.do"}, method =  {RequestMethod.GET})
@@ -80,8 +83,28 @@ public class LoginController {
 		model.addAttribute("exception", exception);
 		model.addAttribute("username", userDetails.getUsername());
 		
-		return "/login/denied";
+		return "login/denied";
 	}
+	
+	@RequestMapping(value = "/sample/ajaxTest", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public ModelAndView ajaxTest() {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("testJson", "ajaxTest");
+		mv.setViewName("jsonView");
+		return mv;
+	}
+	
+	
+	@GetMapping(value="/api/login")
+    public String restLogin(@RequestParam(value="error", required = false) String error, @RequestParam(value="exception", required = false) String exception, ModelMap model){
+		System.out.print("path : /api/login \n");
+		
+		model.addAttribute("exception", exception);
+		model.addAttribute("error", error);
+		
+        return "rest/login";
+    }
 	
 	@RequestMapping(value = "/api/messages.do", method =  {RequestMethod.GET})
 	@ResponseBody
@@ -108,13 +131,5 @@ public class LoginController {
 	}
 	
 	
-	@RequestMapping(value = "/sample/ajaxTest", method = {RequestMethod.GET, RequestMethod.POST})
-	@ResponseBody
-	public ModelAndView ajaxTest() {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("testJson", "ajaxTest");
-		mv.setViewName("jsonView");
-		return mv;
-	}
 	
 }

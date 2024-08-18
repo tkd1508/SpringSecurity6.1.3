@@ -18,8 +18,10 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor // 이건 뭘까? 생성자를 자동으로 설정해주는 어노테이션
 public class User2Controller {
 	
 	@Resource(name="user2Service")

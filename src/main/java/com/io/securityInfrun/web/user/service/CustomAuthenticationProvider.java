@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import com.io.securityInfrun.util.FormWebAuthenticationDetails;
+import com.io.securityInfrun.util.exception.SecretException;
 
 import jakarta.annotation.Resource;
 
@@ -82,7 +83,8 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			String secretKey = f.getSecretkey();
 			
 			if(secretKey == null || !"kkk".equals(secretKey)) {
-				throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
+				//throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
+				throw new SecretException("1"); // 1:Invalid Secret
 			}
 			
 			return loadedUser;
