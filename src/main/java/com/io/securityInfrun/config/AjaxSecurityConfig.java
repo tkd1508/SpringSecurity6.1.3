@@ -1,8 +1,13 @@
 package com.io.securityInfrun.config;
 
+import java.util.Arrays;
+
+import org.apache.catalina.filters.CorsFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,7 +22,11 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.io.securityInfrun.util.RoleHierarchyServiceImpl;
 import com.io.securityInfrun.util.Filter.AjaxLoginProcessingFilter;
 import com.io.securityInfrun.util.entryPoint.AjaxAccessDeniedHandler;
 import com.io.securityInfrun.util.entryPoint.AjaxLoginAuthenticationEntryPoint;
@@ -33,6 +42,9 @@ import jakarta.servlet.DispatcherType;
 public class AjaxSecurityConfig {
 	
 	private AjaxLoginProcessingFilter filter;
+	
+	@Autowired
+	private RoleHierarchyServiceImpl roleHierarchyServiceImpl;
 	
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
@@ -83,7 +95,7 @@ public class AjaxSecurityConfig {
 		
     	http
     	//.csrf(csrf ->csrf.disable())
-    	.cors(cors ->cors.disable())
+    	.cors(cors ->cors.configurationSource(corsConfigurationSource()))
     	.securityMatcher("/api/**")
     	//.sessionManagement(management ->management
         //.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))//IF_REQUIRED
@@ -107,5 +119,41 @@ public class AjaxSecurityConfig {
       return http.build();
    }
 	
+	@Bean
+    public RoleHierarchyImpl roleHierarchy(){
+
+        String allHierarchy = roleHierarchyServiceImpl.findAllHierarchy();
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy(allHierarchy);
+
+        return roleHierarchy;
+    }
+	
+	/*
+	@Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인 설정
+        config.addAllowedHeader("*"); // 허용할 헤더 설정
+        config.addAllowedMethod("*"); // 허용할 메서드 설정
+        source.registerCorsConfiguration("/**", config); // 모든 경로에 대해 CORS 설정 적용
+        return new CorsFilter();
+    }
+	*/
+	
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration configuration = new CorsConfiguration();
+	    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+	    configuration.setAllowCredentials(true);
+	    configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Authorization", "Cache-Control", "Content-Type"));
+	    
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", configuration);
+	    return source;
+	}
 	
 }
