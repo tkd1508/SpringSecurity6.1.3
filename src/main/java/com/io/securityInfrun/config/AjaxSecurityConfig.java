@@ -26,7 +26,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.io.securityInfrun.util.RoleHierarchyServiceImpl;
 import com.io.securityInfrun.util.Filter.AjaxLoginProcessingFilter;
 import com.io.securityInfrun.util.entryPoint.AjaxAccessDeniedHandler;
 import com.io.securityInfrun.util.entryPoint.AjaxLoginAuthenticationEntryPoint;
@@ -42,9 +41,6 @@ import jakarta.servlet.DispatcherType;
 public class AjaxSecurityConfig {
 	
 	private AjaxLoginProcessingFilter filter;
-	
-	@Autowired
-	private RoleHierarchyServiceImpl roleHierarchyServiceImpl;
 	
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
@@ -119,15 +115,6 @@ public class AjaxSecurityConfig {
       return http.build();
    }
 	
-	@Bean
-    public RoleHierarchyImpl roleHierarchy(){
-
-        String allHierarchy = roleHierarchyServiceImpl.findAllHierarchy();
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy(allHierarchy);
-
-        return roleHierarchy;
-    }
 	
 	/*
 	@Bean
